@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="icon.png">
+  <title>WeatherBoard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    html, body {
+      width: 100vw;
+      max-width: 100vw;
+      overflow-x: hidden; /* Prevent horizontal scroll */
+    }
+
+    body {
+      text-align: center;
+      margin-top: 0.8rem;
+      background-color: #222;
+      color: #f4f4f4;
+      background-image: url('mountain-lake-torres-del-paine-nature-scenery-4k-wallpaper-uhdpaper.com-627@2@b.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      width: 100vw;
+      max-width: 100vw;
+      overflow-x: hidden; /* Prevent horizontal scroll */
+    }
+    .button-bar {
+      margin-bottom: 5px;
+    }
+    .diagram-container
+    .weather-box {
+      height: 30%;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px;
+    }
+   .weather-box1 {
+      height: 30%;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px;
+    }
+    .graph-container {
+      width: 100%;    
+      height: 100%; 
+      display: flex;   
+      justify-content: center;
+      
+    }
+
+    .graph {
+      width: 80% !important;
+      height: 80% !important;
+    }
+
+    .weather-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Center and size weather boxes for hourly and 10 day views */
+    .grid-container,
+    .grid-container1 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr); 
+      grid-template-rows: repeat(4, auto);   
+      gap: 16px;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .hourly_subweather_collumn,
+    .today_subweather_collumn,
+    .subweather,
+    .subweather_collumn {
+      font-family: 'Georgia', sans-serif;
+      font-weight: 490;               
+      font-size: 1.15rem;
+      color: #555;
+      line-height: 1.5;
+
+      padding: 10px 20px;
+      margin: 10px 12px;
+      background: white;        
+      border-radius: 20px;       
+      padding: 10px;
+      color: #000 !important;    
+      border: 2px solid #444;    
+      box-sizing: border-box;
+    }
+   .hourly_subweather_collumn1{
+      font-family: 'Georgia', sans-serif;
+      font-weight: 490;               
+      font-size: 1.15rem;
+      color: #555;
+      line-height: 1.5;
+
+      padding: 10px 10px;
+      margin: 10px 12px;
+      background: white;        
+      border-radius: 20px;       
+      padding: 5px;
+      color: #000 !important;    
+      border: 2px solid #444;    
+      box-sizing: border-box;
+   }
+    .info-columns {
+      display: flex;
+      justify-content: center;
+      width: 35%;
+      margin-bottom: 20px; /* space below */
+}
+
+    .charts-row {
+        display: flex;
+        justify-content: center;
+        gap: 40px; /* space between graphs */
+        width: 100%;
+  }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+}
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      opacity: 0.8;  
+      grid-template-rows: repeat(6, auto);   
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .Container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8; 
+      flex-wrap: wrap;
+      background: transparent;
+      width: 100vw;
+      min-height: 100vh;     
+      overflow-x: hidden;
+      overflow-y: auto;        
+
+}
+    .mapContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      height: 80vh;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+    }
+
+  .grid-container1{
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); 
+      grid-template-rows: repeat(2, auto);
+      opacity: 0.8;    
+      gap: 16px;
+      margin-top: 20px;
+  }
+    .weatherbox {
+      font-weight: 650;               
+      font-size: 1.25rem;
+      color: #444;
+      justify-content: center;
+      
+      
+      width: 65%; 
+      height: fit-content; 
+      padding: 30px 20px;
+      margin: 30px 12px; 
+      background: white; 
+      border-radius: 20px;
+      border: 4px solid #000; 
+      color: #000 !important; 
+      box-sizing: border-box; 
+    }
+
+     .weatherbox1 {
+      font-weight: 650;
+                    
+      font-size: 1.25rem;
+      color: #444;
+      
+      
+      
+      width: 80%; 
+      height: fit-content; 
+      padding: 30px 15px;
+      margin: 30px 12px; 
+      background: white; 
+      border-radius: 20px;
+      border: 4px solid #000;  
+      justify-content: center;
+      color: #000 !important; 
+      box-sizing: border-box; 
+    }
+
+  .btn-custom-grey {
+    font-weight: 650;               
+    font-size: 1.25rem;
+    background-color: #008cff !important;
+    color: #222 !important;
+    border: 2px solid #000 !important;
+  }
+  .btn-custom-grey:hover, .btn-custom-grey:focus {
+    background-color: #a0a0a0 !important;
+    color: #000 !important;
+    border: 2px solid #000 !important;
+  }
+
+  .map-buttons {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.subweather {
+  background: transparent !important;   /* Remove background */
+  border: none !important;              /* Remove border */
+  box-shadow: none !important;          /* Remove any shadow */
+  border-radius: 0 !important;          /* Remove rounding */
+  padding: 0 !important;                /* Remove padding */
+  margin: 0 !important;                 /* Remove margin */
+}
+
+.back-to-search-btn {
+  background-color: #acd4ef !important; 
+  color: #222 !important;
+  border: none !important;              /* Make border invisible */
+  border-radius: 12px !important;
+  font-weight: bold !important;
+  padding: 8px 24px !important;
+  transition: background 0.2s, color 0.2s;
+}
+.back-to-search-btn:hover, .back-to-search-btn:focus {
+  background-color: #bbdefb !important;
+  color: #000 !important;
+  border: none !important;              /* Make border invisible on hover */
+}
+
+#cityName {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #000 !important;
+  text-decoration: underline;
+  text-shadow: #bdbdbd;
+  text-decoration-color: #000;
+  margin-bottom: 18px;
+  text-transform: uppercase; /* Make city name all caps */
+}
+  </style>
+</head>
+<body>
+
+  
+  <p id="cityName"></p>
+
+  <!-- Back to Search button on top -->
+  <button class="back-to-search-btn" style="margin-bottom:10px;" onclick="window.location.href='index.html'">Back to Search</button>
+
+  <!-- Button bar -->
+  <div class="button-bar">
+    <button class="btn btn-custom-grey" onclick="loadContent('today')">Today/Tomorrow Weather</button>
+    <button class="btn btn-custom-grey" onclick="loadContent('more-info')">More Info</button>
+    <button class="btn btn-custom-grey" onclick="loadContent('hourly')">Hourly Forecast</button>
+    <button class="btn btn-custom-grey" onclick="loadContent('10day')">10 Day Forecast</button>
+    <!--- <button class="btn btn-primary" onclick="loadContent('monthly')">Monthly</button>-->
+  </div>
+
+  <!-- Main -->
+  <!-- Containers -->
+  <div id="mainContainer" class="Container"></div>
+  <div id="weatherGrid" class="grid-container"></div>
+  <div id="weatherGrid1" class="grid-container1"></div>
+  <div id="map_container" class="mapContainer"></div>
+
+  <div id="ok" class="ok1"></div>
+        <div id="ne"></div>
+
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+        
+        <script src="moment.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    let map;
+    let trafficLayer; 
+    let evLayer;
+    let isEVLayerVisible; false;
+    const apiKey = 'P9SDNA48YBHNHDYAPYEDA9MU9';
+    //const tomtomKey = 'cr9tSVx8vvG27tdlH6veiqnpUYb9kGhg';
+   // let mapUrl;
+    const city = localStorage.getItem('city') || 'Patras,GR';
+    document.getElementById('cityName').innerText = 'Weather of ' + city;
+   
+
+    
+
+    function getMoonPhaseName(deg) {
+    if (deg === undefined || deg === null) return "No data";
+    if (deg < 22.5) return "New Moon";
+    if (deg < 67.5) return "Waxing Crescent";
+    if (deg < 112.5) return "First Quarter";
+    if (deg < 157.5) return "Waxing Gibbous";
+    if (deg < 202.5) return "Full Moon";
+    if (deg < 247.5) return "Waning Gibbous";
+    if (deg < 292.5) return "Last Quarter";
+    if (deg < 337.5) return "Waning Crescent";
+    return "New Moon";
+  }
+
+function getWindDirection(deg) {
+  if (deg === undefined || deg === null) return "No data";
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  return directions[Math.round(deg / 45) % 8];
+}
+
+    async function loadContent(type) {
+      const city = localStorage.getItem('city');
+      const data = JSON.parse(localStorage.getItem('weatherData'));
+
+      
+
+      const grid_container = document.getElementById('weatherGrid');
+      const main_container = document.getElementById('mainContainer');
+      const map_container = document.getElementById('map_container');
+      const grid_container1=document.getElementById('weatherGrid1');
+      
+                
+
+      if (type === 'today') {
+        main_container.innerHTML=' '
+        grid_container.innerHTML=' '
+        grid_container1.innerHTML=' '
+        main_container.style.display= 'flex';
+        
+        const today = data.days[0];
+        const tomorrow = data.days[1];
+        main_container.innerHTML += `
+        <div class="info-columns">
+            <div class="weatherbox">
+              <h2>Today</h2>
+              <p>${today.datetime}</p>
+              <p>${data.resolvedAddress}</p>
+              <p>Latitude: ${data.latitude} Longitude: ${data.longitude}</p>
+              <p>${data.currentConditions.conditions}</p>
+              <p>${data.alerts && data.alerts.length > 0 ? '⚠️ Warning: ' + data.alerts[0].event : '☀️ No Weather Warning'}</p>
+              <div class="subweather">
+                <div class="today_subweather_collumn">
+                  
+                  <p>Current: ${data.currentConditions.temp} °C</p>
+                  <p>🌡 Max: ${today.tempmax} °C</p>
+                  <p>🌡 Min: ${today.tempmin} °C</p>
+                  <p>💧 Humidity: ${data.currentConditions.humidity}%</p>
+                  <p>💧 Dew Point: ${data.currentConditions.dew}°C</p>
+                  
+                </div>
+                <div class="today_subweather_collumn">
+                  <p>🌬️ Wind: ${data.currentConditions.windspeed} km/h</p>
+                  <p>☁ Cloud Cover: ${data.currentConditions.cloudcover}%</p>
+                  <p>🔆 UV index: ${data.currentConditions.uvindex}</p>
+                  <p>☀️ Sunrise: ${today.sunrise != null ? today.sunrise : 'No Data'}</p>
+                  <p>🌇 Sunset: ${today.sunset != null ? today.sunset : 'No Data'}</p>
+                </div>
+              </div>
+              </div>
+            <div class="weatherbox">
+            <h2>Tomorrow</h2>
+              <p>${tomorrow.datetime}</p>
+              <p>${data.resolvedAddress}</p>
+              <p>Latitude: ${data.latitude} Longitude: ${data.longitude}</p>
+              <p>${tomorrow.conditions}</p>
+              <p>${data.alerts && data.alerts.length > 0 ? '⚠️ Warning: ' + data.alerts[0].event : '☀️ No Weather Warning'}</p>
+              <div class="subweather">
+                <div class="today_subweather_collumn">
+                  
+                  <p>🌡 Average: ${tomorrow.temp} °C</p>
+                  <p>🌡 Max: ${tomorrow.tempmax} °C</p>
+                  <p>🌡 Min: ${tomorrow.tempmin} °C</p>
+                  <p>💧 Humidity: ${tomorrow.humidity}%</p>
+                  <p>💧 Dew Point: ${tomorrow.dew}°C</p>
+                  
+                </div>
+                <div class="today_subweather_collumn">
+                  <p>🌬️ Wind: ${data.currentConditions.windspeed} km/h</p>
+                  <p>☁ Cloud Cover: ${tomorrow.cloudcover}%</p>
+                  <p>🔆 UV index: ${tomorrow.uvindex}</p>
+                  <p>☀️ Sunrise: ${tomorrow.sunrise != null ? tomorrow.sunrise : 'No Data'}</p>
+                  <p>🌇 Sunset: ${tomorrow.sunset != null ? tomorrow.sunset : 'No Data'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+                   `;
+  
+}     
+      else if (type === 'hourly'){
+        grid_container.innerHTML=' '
+        grid_container1.innerHTML=' '
+        main_container.innerHTML='';
+        main_container.style.display= 'none';
+        main_container.style.display= 'flex';
+        
+
+        
+        
+        //Τitle 1
+        
+        grid_container.innerHTML += `
+            <div style="
+              grid-column: 1 / -1;       /* Span oles tis sthles */
+              text-align: center;
+              font-weight: bold;
+              margin: 20px 0;
+              font-size: 5em;
+              color: #white;
+              text-shadow:
+              -5px -5px 3px black,
+              5px -5px 3px black,
+              -5px  5px 3px black,
+              5px  5px 3px black;
+            ">
+              Today, ${data.days[0].datetime}
+            </div>
+          `;
+        
+        
+        main_container.innerHTML += `   
+        <div class="graph-container">
+          <div class="graph">
+            <div style="text-align:center;">
+              <h1 style="color:white;">Today's Hourly Temprature (°C)</h1>
+                
+                  <canvas id="tempChart"></canvas>
+                </div>
+              </div>
+            </div>`;
+
+
+
+        //Graph 1
+
+        setTimeout(() => {
+          const hours = data.days[0].hours;
+          const labels = hours.map(hour => hour.datetime);
+          const temps = hours.map(hour => hour.temp);
+
+          const ctx = document.getElementById('tempChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Temperature (°C)',
+                data: temps,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'red',
+                borderWidth: 3
+              }]
+            },
+            options: {
+              responsive: false,
+              scales: {
+                y: {
+                  beginAtZero: false,
+                  ticks: {
+                    color: 'white',          
+                    font: {
+                      size: 25,               
+                      family: 'Arial',        
+                      weight: 'bold',         
+                      style: 'italic'
+              }
+            }
+                },
+                x: {
+                  ticks: {
+                    color: 'white',
+                    font: {
+                      size: 25,               
+                      family: 'Arial',        
+                      weight: 'bold',         
+                      style: 'italic'
+              }
+            }}}}
+          });
+        }, 0);
+              
+        
+
+
+
+
+        //Grid 1
+
+        for (let i = 0; i < 24; i++) {
+          const hour = data.days[0].hours[i];
+          grid_container.innerHTML += `
+            <div class="weatherbox">
+              <h4>${hour.datetime}</h4>
+              <p>${hour.conditions}</p>
+              <div class="subweather">
+                <div class="hourly_subweather_collumn">
+                  <p>🌡 Temp: ${hour.temp} °C</p>
+                  <p>🌡 Feels Like: ${hour.feelslike} °C</p>
+                  <p>💧 Humidity: ${hour.humidity}%</p>
+                  <p>💧 Dew Point: ${hour.dew}°C</p>
+                  <p>🌬️ Wind: ${hour.windspeed} km/h</p>
+                </div>
+                <div class="subweather_collumn">
+                  <p>🌧 Rain Chance: ${hour.precipprob}%</p>
+                  <p>🌧 Rain: ${hour.precip} mm</p>
+                  <p>☁ Cloud Cover: ${hour.cloudcover}%</p>
+                  <p>🔆 UV index: ${hour.uvindex}</p>
+                </div>
+              </div>
+            </div>`;}
+
+
+
+
+
+        //Title 2
+
+        grid_container.innerHTML += `
+          <div style="
+            grid-column: 1 / -1;       /* Span oles tis sthles */
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+            font-size: 5em;
+            color: #white;
+            text-shadow:
+            -5px -5px 3px black,
+            5px -5px 3px black,
+            -5px  5px 3px black,
+            5px  5px 3px black;
+          ">
+          Tomorrow, ${data.days[1].datetime}
+        `;
+
+        main_container.innerHTML += `   
+        <div class="graph-container">
+          <div class="graph">
+            <div style="text-align:center;">
+              <h1 style="color:white;">Tomorrow's Hourly Temprature (°C)</h1>
+                
+                  <canvas id="tempChart1"></canvas>
+                </div>
+              </div>
+            </div>`;
+  
+        //Graph 2
+
+        setTimeout(() => {
+        const hours1 = data.days[1].hours;
+        const labels1 = hours1.map(hour => hour.datetime);
+        const temps1 = hours1.map(hour => hour.temp);
+
+        const ctx = document.getElementById('tempChart1').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels1,
+            datasets: [{
+              label: 'Temperature (°C)',
+              data: temps1,
+              backgroundColor: 'rgba(54, 162, 235, 0.7)',
+              borderColor: 'red',
+              borderWidth: 3
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: false,
+                ticks: {
+                  color: 'white',          
+                  font: {
+                    size: 25,               
+                    family: 'Arial',        
+                    weight: 'bold',         
+                    style: 'italic'
+            }
+          }
+              },
+              x: {
+                ticks: {
+                  color: 'white',
+                  font: {
+                    size: 25,               
+                    family: 'Arial', 
+                    weight: 'bold',         
+                    style: 'italic'
+            }
+          }}}}
+        });
+      }, 0);
+
+ 
+  
+
+
+      //Grid 2
+
+      for (let j = 0; j < 24; j++) {
+          const hour1 = data.days[1].hours[j];
+           grid_container.innerHTML += `
+            <div class="weatherbox">
+              <h4>${hour1.datetime}</h4>
+              <p>${hour1.conditions}</p>
+              <div class="subweather">
+                <div class="hourly_subweather_collumn">
+                  <p>🌡 Temp: ${hour1.temp} °C</p>
+                  <p>🌡 Feels Like: ${hour1.feelslike} °C</p>
+                  <p>💧 Humidity: ${hour1.humidity}%</p>
+                  <p>💧 Dew Point: ${hour1.dew}°C</p>
+                  <p>🌬️ Wind: ${hour1.windspeed} km/h</p>
+                </div>
+                <div class="subweather_collumn">
+                  <p>🌧 Rain Chance: ${hour1.precipprob}%</p>
+                  <p>🌧 Rain: ${hour1.precip} mm</p>
+                  <p>☁ Cloud Cover: ${hour1.cloudcover}%</p>
+                  <p>🔆 UV index: ${hour1.uvindex}</p>
+                </div>
+              </div>
+            </div>`;
+}}
+        
+      
+      if (type === 'more-info'){
+        main_container.innerHTML=' '
+        grid_container.innerHTML=' '
+        grid_container1.innerHTML=' '
+        map_container.innerHTML=''
+        map_container.style.display='none'; //Κρυβει ολόκληρο το container του χάρτη, αλλιώς φαίνεται το περίγραμμα
+        main_container.style.display= 'flex';
+        
+        const today = data.days[0];
+        const tomorrow = data.days[1];
+        main_container.innerHTML += `
+          <div class="info-columns">
+            <div class="weatherbox">
+              <h4>Today</h4>
+              <p>${today.datetime}</p>
+              <p>${data.resolvedAddress}</p>
+              <p>Latitude: ${data.latitude} Longitude: ${data.longitude}</p>
+              <p>${data.description}</p>
+              <p>${data.alerts && data.alerts.length > 0 ? '⚠️ Warning: ' + data.alerts[0].event : '☀️ No Weather Warning'}</p>
+              <div class="subweather">
+                <div class="today_subweather_collumn">
+
+                  <p>❄️ Snow: ${data.currentConditions.snow} </p>
+                  <p>❄️ Snowdepth: ${today.snowdepth} cm</p>
+                  <p>🅿️ Pressure: ${today.pressure} atm</p>
+                  <p>🌑 Moonphase: ${data.currentConditions.moonphase}° (${getMoonPhaseName(data.currentConditions.moonphase)})</p>
+                  <p>🌧 Rain Chance: ${data.currentConditions.precipprob || '0' } %</p>
+                  <p>💧 Precipitation: ${today.precicover || '0'} mm</p>
+                </div>
+                <div class="today_subweather_collumn">
+                  <p>🔎 Visibility: ${today.visibility} km</p>
+                  <p>🌬️ Wind Direction: ${data.currentConditions.winddir}° (${getWindDirection(data.currentConditions.winddir)})</p>
+                  <p>🔆 Solar Energy: ${today.solarenergy} J</p>
+                  <p>🔆Solar Radiation: ${data.currentConditions.solarradiation} W/m^2</p>
+                  <p>🌇 Sunrise Epoch: ${today.sunriseEpoch != null ? today.sunriseEpoch + ' sec' : 'NO DATA'}</p>
+                </div>
+              </div>
+              </div>
+             <div class="weatherbox">
+              <h4>Tomorrow</h4>
+              <p>${tomorrow.datetime}</p>
+              <p>${data.resolvedAddress}</p>
+              <p>Latitude: ${data.latitude} Longitude: ${data.longitude}</p>
+              <p>${tomorrow.description}</p>
+              <p>${data.alerts && data.alerts.length > 0 ? '⚠️ Warning: ' + data.alerts[0].event : '☀️ No Weather Warning'}</p>
+              <div class="subweather">
+                <div class="today_subweather_collumn">
+
+                  <p>❄️ Snow: ${tomorrow.snow} </p>
+                  <p>❄️ Snowdepth: ${tomorrow.snowdepth} cm</p>
+                  <p>🅿️ Pressure: ${tomorrow.pressure} atm</p>
+                  <p>🌑 Moonphase: ${data.currentConditions.moonphase}° (${getMoonPhaseName(data.currentConditions.moonphase)})</p>
+                  <p>🌧 Rain Chance: ${tomorrow.precipprob || '0' } %</p>
+                  <p>💧 Precipitation: ${tomorrow.precicover || '0' } cm</p>
+                </div>
+                <div class="today_subweather_collumn">
+                  <p>🔎 Visibility: ${tomorrow.visibility} km</p> 
+                  <p>🌬️ Wind Direction: ${data.currentConditions.winddir}° (${getWindDirection(data.currentConditions.winddir)})</p>
+                  <p>🔆 Solar Energy: ${tomorrow.solarenergy} J</p>
+                  <p>🔆Solar Radiation: ${tomorrow.solarradiation} W/m^2</p>
+                  <p>🌇 Sunrise Epoch: ${tomorrow.sunriseEpoch != null ? tomorrow.sunriseEpoch + ' sec' : 'NO DATA'}</p>
+                </div>
+              </div>
+              </div> 
+              </div>     
+       `;
+      
+    main_container.innerHTML += `   
+    <div class="charts-row">
+      <div style="text-align:center; width: 50%;">
+        <h2 style="color:white;">Today's Chance of Rain (%)</h2>
+            <canvas id="tempChart2"></canvas>
+              </div>
+    <div style="text-align:center; width: 50%;">
+      <h2 style="color:white;">Tomorrow's Chance of Rain (%)</h2>
+        <canvas id="tempChart3" ></canvas>
+          </div>
+  </div>`;
+
+
+  
+  
+  
+  
+  //TEMP
+  setTimeout(() => {
+    const hours2 = data.days[0].hours;
+    const labels2 = hours2.map(hour => hour.datetime);
+    const temps2 = hours2.map(hour => hour.temp);
+
+    const ctx = document.getElementById('tempChart2').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels2,
+        datasets: [{
+          label: 'Temperature (°C)',
+          data: temps2,
+          borderColor: 'rgba(255, 99, 132, 1)', 
+          backgroundColor: 'rgba(255, 99, 132, 0.3)', 
+          borderWidth: 3,
+          fill: true,
+          tension: 0.3,       
+          pointRadius: 5,       
+          pointBackgroundColor: 'white',
+          pointBorderColor: 'red'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          },
+          x: {
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          }
+        }
+      }
+    });
+  }, 0);
+
+
+
+
+
+
+
+  //chance of rain
+  setTimeout(() => {
+    const hours3 = data.days[1].hours;
+    const labels3 = hours3.map(hour => hour.datetime);
+    const rainChances = hours3.map(hour => hour.precipprob);
+
+    const ctx = document.getElementById('tempChart3').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels3,
+        datasets: [{
+          label: 'Chance of Rain (%)',
+          data: rainChances,
+          borderColor: 'rgba(255, 99, 132, 1)', 
+          backgroundColor: 'rgba(255, 99, 132, 0.3)', 
+          borderWidth: 3,
+          fill: true,
+          tension: 0.3,       
+          pointRadius: 5,       
+          pointBackgroundColor: 'white',
+          pointBorderColor: 'red'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          },
+          x: {
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          }
+        }
+      }
+    });
+  }, 0);
+
+
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      if (type === '10day'){
+        grid_container.innerHTML=' '
+        grid_container1.innerHTML=' '
+        main_container.innerHTML=' '
+        map_container.innerHTML =' '
+        map_container.style.display='none';
+        main_container.style.display = 'flex';
+        
+        
+
+
+
+        main_container.innerHTML += `   
+        <div class="charts-row">
+          <div style="text-align:center; width: 50%;">
+            <h2 style="color:white;">Average Daily Temprature (°C)</h2>
+                <canvas id="tempChart4"></canvas>
+                  </div>
+        <div style="text-align:center; width: 50%;">
+          <h2 style="color:white;">Daily Chance of Rain (%)</h2>
+            <canvas id="tempChart5"></canvas>
+              </div>
+        </div>`;
+
+      setTimeout(() => {
+      
+    
+    const labels4 = data.days.map(day => day.datetime);
+    const temps4 = data.days.map(day => day.temp);
+
+
+
+    const ctx = document.getElementById('tempChart4').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels4,
+        datasets: [{
+          label: 'Temperature (°C)',
+          data: temps4,
+          borderColor: 'rgba(255, 99, 132, 1)', 
+          backgroundColor: 'rgba(255, 99, 132, 0.3)', 
+          borderWidth: 3,
+          fill: true,
+          tension: 0.3,       
+          pointRadius: 5,       
+          pointBackgroundColor: 'white',
+          pointBorderColor: 'red'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          },
+          x: {
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          }
+        }
+      }
+    });
+  }, 0);
+
+
+
+
+
+
+
+
+  setTimeout(() => {
+    const labels5 = data.days.map(day => day.datetime);
+    const rainChances2 = data.days.map(day => day.precipprob);
+
+
+    const ctx = document.getElementById('tempChart5').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels5,
+        datasets: [{
+          label: 'Chance of Rain (%)',
+          data: rainChances2,
+          borderColor: 'rgba(255, 99, 132, 1)', 
+          backgroundColor: 'rgba(255, 99, 132, 0.3)', 
+          borderWidth: 3,
+          fill: true,
+          tension: 0.3,       
+          pointRadius: 5,       
+          pointBackgroundColor: 'white',
+          pointBorderColor: 'red'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          },
+          x: {
+            ticks: {
+              color: 'white',
+              font: {
+                size: 25,
+                family: 'Arial',
+                weight: 'bold',
+                style: 'italic'
+              }
+            }
+          }
+        }
+      }
+    });
+  }, 0); 
+
+
+        for (let i = 0; i <10; i++) {
+          const hour = data.days[i];
+        
+        grid_container1.innerHTML += `
+          
+            <div class="weatherbox1">
+              <h4>${hour.datetime}</h4>
+              <p>${hour.conditions}</p>
+              <div class="subweather">
+                <div class="hourly_subweather_collumn">
+                  <p>🌡 Max: ${hour.tempmax} °C</p>
+                  <p>🌡 Min: ${hour.tempmin} °C</p>
+                  <p>💧 Humidity: ${hour.humidity}%</p>
+                  <p>💧 Dew Point: ${hour.dew}°C</p>
+                  <p>🌬️ Wind: ${hour.windspeed} km/h</p>
+                </div>
+                <div class="subweather_collumn">
+                  <p>🌧 Rain Chance: ${hour.precipprob}%</p>
+                  <p>🌧 Rain: ${hour.precip} mm</p>
+                  <p>☁ Cloud Cover: ${hour.cloudcover}%</p>
+                  <p>🔆 UV index: ${hour.uvindex}</p>
+                  <p>☀️ Sunrise: ${hour.sunrise}</p>
+                  <p>🌇 Sunset: ${hour.sunset}</p>
+                </div>
+              </div>
+            </div>
+          
+
+                   `;
+}
+      } 
+     
+  }
+    //default view
+    loadContent('today');
+  </script>
+</body>
+</html>

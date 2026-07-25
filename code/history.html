@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>City Information</title>
+  <style>
+    body {
+      background-image: url('28295-ancient-natural-stone-wall-texture.webp');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      /*background: #f9f9f9;*/
+      color: #333;
+    }
+    header {
+      background-color: #cb1b1bee;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 4rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .back-container {
+      text-align: center;
+      border-width: 40px;
+      border: #000000;
+      margin: 20px;
+    }
+    .back-btn {
+      background-color: #cb1b1bee;
+      color: white;
+      border-width: 20px;
+      border:#000000;
+      border-radius: 10px;
+      font-size: 2rem;
+      padding: 10px 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background-color 0.3s;
+    }
+    .back-btn:hover {
+      background-color: #cb1b1bee;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    .city-photo {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      
+      color: #cb1b1bee;
+      border-bottom: 2px solid #eee;
+      padding: 0.5rem;
+    }
+    .section-title1{
+      font-size: 2.8rem;
+      
+      color: #cb1b1bee;
+      padding: 0.5rem;
+
+    }
+    .accordion {
+      background-color: #f1f1f1;
+      color: #cb1b1bee;
+      cursor: pointer;
+      padding: 15px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 1.5rem;
+      font-weight: 700;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      transition: background-color 0.3s;
+    }
+    .accordion:hover {
+      background-color: #d35b5b;
+    }
+    .active, .accordion:active {
+      background-color: #cb1b1bee;
+      color: white;
+    }
+    .panel {
+      padding: 2rem;
+      display: none;
+      font-size: 2rem;
+      overflow: hidden;
+      background-color: #fafafa;
+      border-radius: 6px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    City Information for <span id="city"></span>
+  </header>
+
+  <div class="back-container">
+    <button onclick="goBack()" class="back-btn">Back to Search</button>
+  </div>
+  
+  <div class="container">
+    <img id="userPhoto" class="city-photo" src="" alt="City Photo">
+
+    <div class="section-title">General Info</div>
+    <div class= "section-title1" id="descriptionContent"></div>
+
+    <button class="accordion">History</button>
+    <div class="panel" id="historyContent"></div>
+
+    <button class="accordion">Geography</button>
+    <div class="panel" id="geographyContent"></div>
+
+    <button class="accordion">Culture</button>
+    <div class="panel" id="cultureContent"></div>
+
+    <button class="accordion">Economy</button>
+    <div class="panel" id="economyContent"></div>
+
+    <button class="accordion">Tourism</button>
+    <div class="panel" id="tourismContent"></div>
+  </div>
+
+  <script>
+    let city = localStorage.getItem("city");
+    const filenameBase = city[0].toLowerCase() + city.slice(1).toLowerCase();
+    const folderPath = `texts/${filenameBase}`;
+
+    document.getElementById("city").textContent = city;
+    document.getElementById("userPhoto").src = `photos/${filenameBase}.jpg`;
+
+    loadText("descriptionContent", `${folderPath}/${filenameBase}_description.txt`);
+    loadText("historyContent", `${folderPath}/${filenameBase}_history.txt`);
+    loadText("geographyContent", `${folderPath}/${filenameBase}_geography.txt`);
+    loadText("cultureContent", `${folderPath}/${filenameBase}_culture.txt`);
+    loadText("economyContent", `${folderPath}/${filenameBase}_economy.txt`);
+    loadText("tourismContent", `${folderPath}/${filenameBase}_tourism.txt`);
+
+    function loadText(elementId, filePath) {
+      fetch(filePath)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById(elementId).innerHTML = data;
+        })
+        .catch(() => {
+          document.getElementById(elementId).innerHTML = "Content not available.";
+        });
+    }
+
+    const acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        const panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+      });
+    }
+
+    function goBack() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

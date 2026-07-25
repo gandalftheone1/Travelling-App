@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" type="image/png" href="icon.png">
+  <title>Skyntrix</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: url('pexels-johannes-plenio-1118874.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .containier-for-cities{
+       border-radius: 20px;
+      padding: 50px 60px 40px 40px;
+      max-width: 550px;
+      margin: 40px auto 0 auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    }
+    .content-container {
+      background: url('searchbox.jpg') no-repeat center center;
+      background-size: cover;
+      justify-self: center;
+      border-radius: 20px;
+      padding: 50px 60px 40px 40px;
+      max-width: 550px;
+      margin: 40px auto 0 auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    }
+    .header-space {
+      height: 70px; 
+      width: 100%;
+    }
+    .custom-btn {
+      background-color: #c77b08 !important;
+      font-size:1.5rem;
+      font-weight: 600;
+      color: #222 !important;
+      border: 2px solid #000 !important;
+    }
+    .custom-btn:hover, .custom-btn:focus {
+      background-color: #a0a0a0 !important;
+      color: #000 !important;
+      border: 2px solid #000 !important;
+    }
+    #accordionExample {
+      margin: 40px auto;
+      padding: 100px;
+      border-radius: 10px;
+    }
+
+    .accordion-item {
+      margin-bottom: 20px;
+      border-radius: 12px;
+    } 
+    .accordion-button {
+        border-radius: 5px;
+        justify-self: center;
+        width: 50%;
+        background-color: rgb(151, 151, 151);
+        color: rgb(0, 0, 0);
+        font-size: 2rem;
+        padding: 1.2rem 1.25rem; 
+        min-height: 50px;
+        font-family:'Bebas Neue';
+        }
+    .accordion-button:not(.collapsed) {
+        justify-self: center;
+        width: 75%;
+        background-color: #c77b08; 
+        color: white;
+        font-size: 4rem;
+        font-family: 'Bebas Neue';
+      }
+      
+      .accordion-body {
+          padding: 10px;
+          justify-self: center;
+          width: 50%;
+          background-color: white;
+          color: #000000;
+          font-size: 1.5rem;
+          font-family: 'Boldonse';
+        }
+      
+    
+      .city-lists-box {
+          background-color: rgb(28, 28, 28, 0.5);
+          justify-self: center;
+          padding: 25px 30px;
+          margin-top: 2rem;
+          border: 1px solid #ff6f00;
+          border-radius: 12px;
+          width: 50%;
+          box-shadow: 0 0 15px rgba(255, 111, 0, 0.3);
+        }  
+      .city-lists h3 {
+          margin-top: 30px;
+          color: #ff6f00; 
+          font-size: 2.2rem;
+          border-bottom: 2px solid #ff6f00;
+          display: inline-block;
+          margin-bottom: 10px;
+        }
+
+      ul {
+          list-style-type: none;
+          padding-left: 0;
+        }
+
+      ul li {
+          display: inline-block;
+          margin: 6px 8px 6px 0;
+          background-color: #1f1f1f;
+          color: #ffffff;
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 1.2rem;
+          font-weight: 600;
+          transition: background-color 0.3s ease, color 0.3s ease;
+          border: 1px solid #ff6f00;
+        }
+
+      ul li:hover {
+          background-color: #ff6f00;
+          color: #1f1f1f;
+          cursor: pointer;
+        }
+  </style>
+</head>
+<body class="text-center mt-5">
+  <div class="header-space"></div>
+  <div class="content-container">
+    <!-- <h1 style="color: #fff;">Skycast</h1> -->
+
+    <div class="mb-4"></div>
+    <input type="text" id="city" placeholder="Enter city" required class="form-control w-75 mx-auto mb-3" onkeydown="showButtons(event)">
+    <div id="action-buttons" style="display:none;">
+      <button onclick="goToHistory()" class="btn custom-btn me-2">Historical Data</button>
+      <button onclick="goToForecast()" class="btn custom-btn me-2">Weather Forecast</button>
+      <button onclick="goToMap()" class="btn custom-btn me-2">  Traffic Map</button>
+    </div>
+ 
+  </div>
+  <div class="city-lists-box">
+   <div class="city-lists">
+    <h3>Available Greek Cities</h3>
+    <ul>
+      <li>Athina</li><li>Patra</li><li>Thessaloniki</li><li>Kalamata</li><li>Ioannina</li><li>Paros</li><li>Kerkira</li><li>Xania</li><li>Xanthi</li><li>Alexandroupoli</li>
+      <li>Kozani</li><li>Nafplio</li><li>Mesologgi</li><li>Rodos</li><li>Rethimno</li><li>Irakleio</li><li>Kefalonia</li><li>Ithaki</li><li>Grevena</li><li>Lamia</li>
+      <li>Korinthos</li><li>Volos</li><li>Parga</li><li>Kalampaka</li><li>Metsovo</li><li>Livadia</li><li>Larisa</li><li>Aeropoli</li><li>Komotini</li><li>Trikala</li>
+    </ul>
+
+    <h3>Available International Cities</h3>
+    <ul>
+      <li>New York</li><li>London</li><li>Paris</li><li>Rome</li><li>Berlin</li><li>Madrid</li><li>Tokyo</li><li>Beijing</li><li>Seoul</li><li>Bangkok</li>
+      <li>Dubai</li><li>Toronto</li><li>Sydney</li><li>Melbourne</li><li>Buenos Aires</li><li>Mexico City</li><li>Istanbul</li><li>Cairo</li><li>Mumbai</li><li>Singapore</li>
+      <li>Rio de Janeiro</li><li>Los Angeles</li><li>San Francisco</li><li>Chicago</li><li>Vienna</li><li>Amsterdam</li><li>Lisbon</li><li>Oslo</li><li>Stockholm</li><li>Cape Town</li>
+    </ul>
+  </div>
+  </div>
+
+  
+ <script>
+    async function showButtons(event) {
+      if (event.key === "Enter") {
+        const city = document.getElementById('city').value;
+        if (!city) {
+          alert("Please enter a city");
+          return;
+        }
+        document.getElementById('action-buttons').style.display = 'inline-flex' ;
+      }
+    }
+
+    async function goToForecast() {
+      const city = document.getElementById('city').value;
+      if (!city) return alert("Please enter a city");
+
+      const res = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=P9SDNA48YBHNHDYAPYEDA9MU9&contentType=json`);
+      const data = await res.json();
+
+      localStorage.setItem('city', city);
+      localStorage.setItem('weatherData', JSON.stringify(data));
+
+      window.location.href = 'dashboard.html';
+}
+
+
+
+    function goToHistory() {
+      const city = document.getElementById('city').value;
+      if (!city) return alert("Please enter a city");
+      localStorage.setItem('city', city);
+      window.location.href = 'history.html';
+    }
+    async function goToMap() {
+      const city = document.getElementById('city').value;
+      if (!city) return alert("Please enter a city");
+
+      const res = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=P9SDNA48YBHNHDYAPYEDA9MU9&contentType=json`);
+      const data = await res.json();
+
+      localStorage.setItem('city', city);
+      localStorage.setItem('weatherData', JSON.stringify(data));
+
+      window.location.href = 'traffic.html'; 
+    }
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
